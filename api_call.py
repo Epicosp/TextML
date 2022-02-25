@@ -29,7 +29,7 @@ def save_response(api_response, name):
 
 # use API key stored in environment variables
 if __name__ == "__main__":
-    API_KEY = os.getenv('CORE_API_KEY')
+    CORE_API_KEY = os.getenv('CORE_API_KEY')
     queries = ['Blockchain',
     'Cryptocurrency',
     'Genetic engineering',
@@ -43,7 +43,7 @@ if __name__ == "__main__":
 
     # loop through queries, call api and save data for each
     for q in queries:
-        data = core_api_call(API_KEY, q)
+        data = core_api_call(CORE_API_KEY, q)
 
         # sleep 1 second to allow time for database to return a response.
         time.sleep(1)
