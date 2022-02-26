@@ -1,8 +1,7 @@
 #imports
 import requests
 import json
-import pandas as pd
-
+import time
 
 def core_api_call(api_key,query):
     '''
@@ -24,7 +23,5 @@ def core_api_call(api_key,query):
     
     #return api call in json format
     response = requests.post(url,payload_json).json()
+
     return response
-
-
-
