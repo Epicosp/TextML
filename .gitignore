@@ -128,5 +128,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# models folder omitted due to large filesizes
+# models folder ignored due to large filesizes
 saved_models
+
+# API_responses ignored to avoid potential copyright issues
+API_responses

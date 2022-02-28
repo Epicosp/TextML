@@ -12,12 +12,9 @@ def to_data_frame(csv_file):
     return data_frame
 
 
-def english_papers (data_frame):
-    '''uses a dataframe generated from a core_data api response and filters the results by English'''
-    for x, paper in enumerate(data_frame['language'].tolist()):
-        if 'English' or 'en' not in paper:
-            print ('English')#data_frame = data_frame.drop(index = x)
-    data_frame = data_frame.reset_index(drop=True)
+def english_papers (data_frame, language):
+    '''uses a dataframe generated from a core_data api response and filters the results by language'''
+    data_frame = data_frame[data_frame['language'].str.contains(language, na=False)]
     return data_frame
 
 
@@ -38,7 +35,7 @@ def text_clean(text_data):
     returns a list of strings
     '''
     sentences = []
-    for text in text_data:
+    for text in text_data: # maybe pandas apply function can be used instead of loop
         text = text.lower()
         tf_text.normalize_utf8(text)
         text = text[:text.find('references')] # not a nice way to remove references
