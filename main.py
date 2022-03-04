@@ -1,39 +1,36 @@
 import os
-from api_call import core_api_call
+import api_call as ac
 import pandas as pd
 import text_process as tp
+from sklearn.model_selection import train_test_split
+import bert_model as bm
+import model_evaluation as me
+from pathlib import Path
 
 def main():
     # use API key stored in environment variables
     CORE_API_KEY = os.getenv('CORE_API_KEY')
 
-    # pick 10 subjects to train on
-    queries = {'Blockchain':0,
-    'Cryptocurrency':1,
-    'Genetic engineering':2,
-    'Machine learning':3,
-    'Nanotechnology':4,
-    'Quantum computing':5,
-    'Robotics':6,
-    'Social engineering':7,
-    'Space exploration':8,
-    'Virtual reality':9}
+   # ask for user input
+    model_name = input(f'name the model to be trained: ')
+    queries = ac.ask_user()
 
     # dataframe to append processed text
     all_text = pd.DataFrame()
 
-    # loop through queries and process responses 
+    # loop through queries and process text data
     for key, value in queries.items():
     
         # use local files in preference over API calls, if files dont exist, call api and save data locally.
         try:
             data = pd.DataFrame(pd.read_csv(f'API_responses/{key}.csv'))
         except:
-            data = pd.DataFrame(core_api_call(CORE_API_KEY, key))
+            data = pd.DataFrame(ac.core_api_call(CORE_API_KEY, key))
             print (f'Acessing CORE Database for information about {key}')
-            data.to_csv(f'API_responses/{key}.csv', index = False)
+            data.to_csv(f'API_responses/{key}.csv', index = False) #need to create new folder if not present
 
         #process response
+        print (f'cleaning {key} data...')
         data = tp.english_papers(data, 'English')
         data = tp.remove_hyperlinks(data)
     
@@ -49,8 +46,25 @@ def main():
         # append to final dataframe
         all_text = all_text.append(data, ignore_index = True)
 
-    # save dataframe to csv
-    all_text.to_csv('processed_text/NLP_data_test.csv', index = False)
+    #drop duplicates from final data
+    all_text.drop_duplicates(inplace = True)
+
+    #train/test split
+    x_train,x_test,y_train,y_test = train_test_split(all_text['Text'],all_text['Code'])
+
+    #generate a model
+    print ('generating model...')
+    model = bm.generate_model(len(queries))
+
+    #train model
+    print ('Evaluating model...')
+    model_history, train_time, eval = bm.compile_fit_evaluate(model, x_train, y_train, x_test, y_test)
+
+    #generate confusion matrix, save to local file
+    me.confusion_matrix(model, x_test, y_test, model_name)
+
+    # save text and model information
+    me.save_model_data(model,eval,model_history,model_name)
 
 if __name__ == "__main__":
     main()

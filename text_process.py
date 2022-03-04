@@ -33,6 +33,8 @@ def text_clean(text_data):
     removes unweildly tokens
 
     returns a list of strings
+
+    I hate this function
     '''
     sentences = []
     for text in text_data: # maybe pandas apply function can be used instead of loop
@@ -60,5 +62,7 @@ def remove_hyperlinks(data_frame):
     '''removes http strings'''
     data_frame = data_frame.replace('http\S+', '', regex=True)
     return data_frame
+
+
 
 
