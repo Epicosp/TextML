@@ -32,6 +32,6 @@ Nvidia GTX 1070 with 8gb VRAM, 8gb of system RAM
 alternativly, model training was attempted on an apple m1 mac with 16gb of system RAM in an attempt to take advantage of the unique architecture and additional RAM
 
 ## Limitations
-Evaluation of the model uses standard prctises, including computing f1 scores and confuaion matrices, however these computations are done using a train/test split and encompass the text processing variables within the testing dataset, this indicates that the model become somewhat accustomed to text that has been havily processed. When predictions are made using raw text the model can eaily become confused by parameters that have been ommited during text processing.
+Evaluation of the model uses standard practises, including computing f1 scores and confusion matrices, however these computations are done using a train/test split and encompass the text processing variables within the testing dataset, this indicates that the model become somewhat accustomed to text that has been heavily processed. When predictions are made using raw text the model can eaily become confused by parameters that have been ommited during text processing.
 
 
