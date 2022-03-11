@@ -46,7 +46,7 @@ def compile_fit_evaluate (model, x_train, y_train, x_test, y_test):
     print ('Training model...')
     model.compile(optimizer="adam", loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True), metrics=["accuracy"])
     start = time()
-    model_history = model.fit(x_train,y_train,epochs=1)
+    model_history = model.fit(x_train,y_train,epochs=10)
     train_time = (time()-start)
     evaluation = model.evaluate(x_test,  y_test)
     return model_history, train_time, evaluation

@@ -13,6 +13,7 @@ def confusion_matrix(model, x_test, y_test, model_name):
     generates predictions from keras.model.predict and creates a confusion matrix of size equal to the amount of possible predictions.
 
     Returns a heatmap relating to the confusion matrix. The matrix values will be adjusted by the weight of each class in the test data.
+
     '''
     #generate predictions using test data
     predictions = model.predict(x_test)
@@ -24,7 +25,8 @@ def confusion_matrix(model, x_test, y_test, model_name):
     # find column of max for each row and make new column for 'P' Prediction
     results['P'] = predictions.idxmax(axis = 1)
 
-    # append actual encoded values as 'A'
+    # reset index of y_test and append actual encoded values as 'A', 
+    y_test = y_test.reset_index(drop=True)
     results['A'] = y_test
 
     # calculate a frequency value for each P/A pair.
@@ -56,8 +58,8 @@ def confusion_matrix(model, x_test, y_test, model_name):
     # # apply the adjustment factor along rows
     # mtx = mtx.multiply(counts["adjustment_factor"], axis = 'index')
         
-    heatmap = sns.heatmap(mtx)
-    plt.savefig(f'{model_name}_heatmap.png', dpi = 400)
+    sns.heatmap(mtx)
+    plt.savefig(f'{model_name}/confusion_matrix.png', dpi = 400)
 
 
 def save_model_data(model, model_evaluation, model_history, model_name):
@@ -83,11 +85,11 @@ def save_model_data(model, model_evaluation, model_history, model_name):
     data = history.append(eval)
 
     # export to csv
-    data.to_csv(f'{model_name}.csv')
+    data.to_csv(f'{model_name}/evaluation.csv')
 
     # save the model
-    model.save(f'{model_name}_model')
+    model.save(f'{model_name}/model')
 
     # save model architecture as .txt
-    with open('modelsummary.txt', 'w') as f:
+    with open(f'{model_name}/modelsummary.txt', 'w') as f:
         model.summary(print_fn=lambda x: f.write(x + '\n'))

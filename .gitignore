@@ -131,6 +131,7 @@ dmypy.json
 # models folder ignored due to large filesizes
 saved_models
 
-# API_responses ignored to avoid potential copyright issues and clunky files
+# data/models ignored to avoid potential copyright issues and clunky files
 API_responses
 processed_text
+Test*
