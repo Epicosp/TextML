@@ -58,7 +58,7 @@ def confusion_matrix(model, x_test, y_test, model_name):
     # # apply the adjustment factor along rows
     # mtx = mtx.multiply(counts["adjustment_factor"], axis = 'index')
         
-    sns.heatmap(mtx)
+    sns.heatmap(mtx, annot=True)
     plt.savefig(f'{model_name}/confusion_matrix.png', dpi = 400)
 
 

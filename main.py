@@ -1,10 +1,10 @@
 import os
-import api_call as ac
+import src.api_call as ac
 import pandas as pd
-import text_process as tp
+import src.text_process as tp
 from sklearn.model_selection import train_test_split
-import bert_model as bm
-import model_evaluation as me
+import src.bert_model as bm
+import src.model_evaluation as me
 from pathlib import Path
 
 def main():
