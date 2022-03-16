@@ -12,7 +12,7 @@ def confusion_matrix(model, x_test, y_test, model_name):
     '''
     generates predictions from keras.model.predict and creates a confusion matrix of size equal to the amount of possible predictions.
 
-    Returns a heatmap relating to the confusion matrix. The matrix values will be adjusted by the weight of each class in the test data.
+    Returns and saves a heatmap relating to the confusion matrix.
 
     '''
     #generate predictions using test data
@@ -49,14 +49,14 @@ def confusion_matrix(model, x_test, y_test, model_name):
         mtx[item[0]][item[1]] = item[2]
     mtx = mtx.replace(np.NaN, 0)
 
-    # # calculate matrix adjustements by observing weight of each class in the test data
-    # counts = y_test.groupby('y_test').size()
-    # counts.rename(columns = {'size':'y_test_count'}, inplace=True)
-    # total_count = len(y_test)
-    # counts["adjustment_factor"] = counts['y_test_count']/total_count
+    # calculate matrix adjustments by observing weight of each class in the test data
+    counts = y_test.groupby('y_test').size()
+    counts.rename(columns = {'size':'y_test_count'}, inplace=True)
+    total_count = len(y_test)
+    counts["adjustment_factor"] = counts['y_test_count']/total_count
 
     # # apply the adjustment factor along rows
-    # mtx = mtx.multiply(counts["adjustment_factor"], axis = 'index')
+    mtx = mtx.multiply(counts["adjustment_factor"], axis = 'index')
         
     sns.heatmap(mtx, annot=True)
     plt.savefig(f'{model_name}/confusion_matrix.png', dpi = 400)
