@@ -46,17 +46,35 @@ def confusion_matrix(predictions, y_test):
     for item in results_array:
         mtx[item[0]][item[1]] = item[2]
     mtx = mtx.replace(np.NaN, 0)
-
-    # # calculate matrix adjustments by observing weight of each class in the test data
-    # counts = y_test.groupby('y_test').size()
-    # counts.rename(columns = {'size':'y_test_count'}, inplace=True)
-    # total_count = len(y_test)
-    # counts["adjustment_factor"] = counts['y_test_count']/total_count
-
-    # # # apply the adjustment factor along rows
-    # mtx = mtx.multiply(counts["adjustment_factor"], axis = 'index')
-        
+     
     return mtx 
+
+def conf_mtx_weights (confusion_matrix, y_test):
+    '''
+    Applies adjustments to the values in a confusion matrix based
+    
+    on the relative frequency for classification types in the testing data
+
+    type(confusion_matrix) pandas.DataFrame = Dataframe object containing neumerical values representing a confusion matrix.
+
+    type(y_test) pandas.series.Series = set of testing data with unique objects equal to the classes in the confusion matrix.
+
+    '''
+    # New dataframe to allow application groupby function
+    counts = pd.DataFrame()
+
+    # Pass in data and apply groupby, store size values
+    counts['y_test'] = y_test.reset_index(drop=True)
+    counts = counts.groupby('y_test').size()
+
+    # Operations for calculation of adjustment factor for each classification type
+    total_count = len(y_test)
+    adjustment_factor = counts/total_count
+
+    # apply the adjustment factor along rows
+    mtx = confusion_matrix.multiply(adjustment_factor, axis = 'index')
+    
+    return mtx
 
 
 def save_model_data(model, model_evaluation, model_history, model_name):
