@@ -1,32 +1,40 @@
 # Natural langauge processing of scientific papers
 ## Overview
-This project has been a way for me to learn many facets of the python programming language whilst also diving deep into the complexities of API's, tensorflow and keras. 
+The complexities of research writing results in text data that is difficult to parse and has high variance across text sources. Because of this, research papers present a unique opportunity to observe the effects of text processing parameters in natural language models. Although this is a first attempt at building a neural network, it has served as a learning excersise into the complexities of API's, data visualisation, tensorflow and keras. 
 
-## Core Database
-The Core Data API has been used as the primary source of data throughout this project and has been critical in my development in understanding how to interact with APi's and management of json objects and large sets of data. 
+## API's
+The Core Data API has been used as the primary source of data throughout this project and has been critical in building datasets which are reliable, accurate and easily accessable. Core Data provide open access to research papers via an API key.
+
+If you want to run the code in this repo, you will have to sign up for an API key.
+
+More information about Core Data can be found at https://core.ac.uk/
 
 ## Workflow
-the general workflow of the project follows a linear path and can be simplified into a flow diagram (see fig 1)
+The project follows a linear path from data through to trained model and can be simplified into a flow diagram (see fig 1)
 
-![fig 1](images/textML.png)
+![fig 1](images/flow.png)
+
+This is an active repo so additional visualisations and evaluations will be added over time.
 
 ## Using BERT
-the BERT NLP model is avaliable in Tensorflow.hub and is a transformer stack that has been pretrained on a vast array of data from across the internet and digital books. The version of BERT used in this project is the BERT base v4, which consists of a 12 layer transformer stack.
+Bidirectional Encoder Representations from Transformers (BERT) is a relativly new (2018) method of encoding inputs for neural networks. BERT has particular strengths in the area of natural language processing because the encodings are actually produced from a pretrained network, this leads to text encodings that contain context before being used in a specific neural network task.
+
+The BERT preprocessing and encoder is avaliable in Tensorflow.hub, The version of BERT used in this project is the BERT base v4, which is the most recent iteration, and consists of a 12 layer transformer stack.
+
+The original publication about BERT can be found at: https://arxiv.org/abs/1810.04805
 
 ## Experimental variables
 The goal of this project is not to produce a model with any real world application, but to explore the parameters that can be vaired for better quality NLP models, particularly when considering the methods for cleaning text data and neural network architecture.
-some of the independen variables inclue:
+some of the independent variables include:
 
 - dropout layer attenuation rate
 - model architecture
-- activation function (currently using the wrong function for this type of NN)
+- activation function
 - punctuation in text
 - removal of hyperlinks
 - removal of messy text tokens
 - removal of references and names
 - removal of numbers
-
-## Asumptions
 
 ## Hardware
 The current hardware for training consists of a 
