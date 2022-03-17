@@ -8,6 +8,8 @@ The Core Data API has been used as the primary source of data throughout this pr
 ## Workflow
 the general workflow of the project follows a linear path and can be simplified into a flow diagram (see fig 1)
 
+![fig 1](images/textML.png)
+
 ## Using BERT
 the BERT NLP model is avaliable in Tensorflow.hub and is a transformer stack that has been pretrained on a vast array of data from across the internet and digital books. The version of BERT used in this project is the BERT base v4, which consists of a 12 layer transformer stack.
 
