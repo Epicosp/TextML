@@ -53,7 +53,7 @@ def conf_mtx_weights (confusion_matrix, y_test):
     '''
     Applies adjustments to the values in a confusion matrix based
     
-    on the relative frequency for classification types in the testing data
+    on the relative frequency of classification types in the testing data
 
     type(confusion_matrix) pandas.DataFrame = Dataframe object containing neumerical values representing a confusion matrix.
 
