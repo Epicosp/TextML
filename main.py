@@ -78,6 +78,7 @@ def main():
     #generate confusion matrix, save to local file
     print ('Evaluating model...')
     confusion_mtx = me.confusion_matrix(predictions, y_test)
+    confusion_mtx = me.conf_mtx_weights(confusion_mtx, y_test)
     sns.heatmap(confusion_mtx, annot=True)
     plt.savefig(f'{model_name}/confusion_matrix.png', dpi = 400)
 
