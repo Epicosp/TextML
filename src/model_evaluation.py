@@ -8,17 +8,14 @@ from tensorflow import keras
 import seaborn as sns
 
 
-def confusion_matrix(model, x_test, y_test, model_name):
+def confusion_matrix(predictions, y_test):
     '''
-    generates predictions from keras.model.predict and creates a confusion matrix of size equal to the amount of possible predictions.
+    generates predictions from keras.model.predict object and creates a confusion matrix of size equal to the amount of possible predictions.
 
-    Returns and saves a heatmap relating to the confusion matrix.
+    Returns a pandas dataframe.
 
     '''
-    #generate predictions using test data
-    predictions = model.predict(x_test)
-
-    # ensure the data is in the correct structure
+    # open empty dataframe, ensure data is in correct form
     predictions = pd.DataFrame(predictions)
     results = pd.DataFrame()
 
@@ -32,10 +29,11 @@ def confusion_matrix(model, x_test, y_test, model_name):
     # calculate a frequency value for each P/A pair.
     results = results.groupby(results.columns.tolist(),as_index=False).size()
 
-    size = len(predictions.columns.tolist())
+    # Convert to np array
     results_array = results.to_numpy()
 
-    #generate confusion matrix grid (n x n)
+    # Generate matrix grid (n x n)
+    size = len(predictions.columns.tolist())
     mtx = {}
     for i in range(size):
         for x in range(size):    
@@ -49,17 +47,16 @@ def confusion_matrix(model, x_test, y_test, model_name):
         mtx[item[0]][item[1]] = item[2]
     mtx = mtx.replace(np.NaN, 0)
 
-    # calculate matrix adjustments by observing weight of each class in the test data
-    counts = y_test.groupby('y_test').size()
-    counts.rename(columns = {'size':'y_test_count'}, inplace=True)
-    total_count = len(y_test)
-    counts["adjustment_factor"] = counts['y_test_count']/total_count
+    # # calculate matrix adjustments by observing weight of each class in the test data
+    # counts = y_test.groupby('y_test').size()
+    # counts.rename(columns = {'size':'y_test_count'}, inplace=True)
+    # total_count = len(y_test)
+    # counts["adjustment_factor"] = counts['y_test_count']/total_count
 
-    # # apply the adjustment factor along rows
-    mtx = mtx.multiply(counts["adjustment_factor"], axis = 'index')
+    # # # apply the adjustment factor along rows
+    # mtx = mtx.multiply(counts["adjustment_factor"], axis = 'index')
         
-    sns.heatmap(mtx, annot=True)
-    plt.savefig(f'{model_name}/confusion_matrix.png', dpi = 400)
+    return mtx 
 
 
 def save_model_data(model, model_evaluation, model_history, model_name):

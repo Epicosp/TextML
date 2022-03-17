@@ -6,6 +6,8 @@ from sklearn.model_selection import train_test_split
 import src.bert_model as bm
 import src.model_evaluation as me
 from pathlib import Path
+import seaborn as sns
+from matplotlib import pyplot as plt
 
 def main():
     # use API key stored in environment variables
@@ -70,9 +72,14 @@ def main():
 
     model_history, train_time, eval = bm.compile_fit_evaluate(model, x_train, y_train, x_test, y_test)
 
+    # used trained model to predict y_test values
+    predictions = model.predict(x_test)
+
     #generate confusion matrix, save to local file
     print ('Evaluating model...')
-    me.confusion_matrix(model, x_test, y_test, model_name)
+    confusion_mtx = me.confusion_matrix(predictions, y_test)
+    sns.heatmap(confusion_mtx, annot=True)
+    plt.savefig(f'{model_name}/confusion_matrix.png', dpi = 400)
 
     # save text and model information
     me.save_model_data(model,eval,model_history,model_name)
