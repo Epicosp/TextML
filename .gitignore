@@ -132,7 +132,7 @@ dmypy.json
 saved_models
 
 # data/models ignored to avoid potential copyright issues and clunky files
-raw_data
+sample_data
 API_responses
 processed_text
 Test*
