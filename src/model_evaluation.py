@@ -77,7 +77,6 @@ def conf_mtx_weights (confusion_matrix, y_test):
     
     return mtx
 
-
 def compute_accuracy(results):
     '''compute keras.metrics.accuracy, return the class object '''
     acc = tf.keras.metrics.Accuracy()
@@ -115,3 +114,21 @@ def save_model_data(model, model_evaluation, model_history, model_name):
     # save model architecture as .txt
     with open(f'{model_name}/modelsummary.txt', 'w') as f:
         model.summary(print_fn=lambda x: f.write(x + '\n'))
+
+def compute_precision(confusion_matrix):
+    '''
+    extracts the diagonal from the confusion matrix and divides by the sum of the rows. 
+    
+    returns a list of precisions for each class in the data.
+    '''
+    precision = np.diag(confusion_matrix) / np.sum(confusion_matrix, axis = 0)
+    return precision
+
+def compute_recall(confusion_matrix):
+    '''
+    extracts the diagonal from the confusion matrix and divides by the sum of the columns. 
+    
+    returns a list of recalls for each class in the data.
+    '''
+    recall = np.diag(confusion_matrix) / np.sum(confusion_matrix, axis = 1)
+    return recall
