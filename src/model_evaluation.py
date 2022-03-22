@@ -7,15 +7,10 @@ import tensorflow_text
 from tensorflow import keras
 import seaborn as sns
 
+def results(predictions, y_test):
+    '''Returns a dataframe containing predicted and true values from keras.model.predict object.'''
 
-def confusion_matrix(predictions, y_test):
-    '''
-    generates predictions from keras.model.predict object and creates a confusion matrix of size equal to the amount of possible predictions.
-
-    Returns a pandas dataframe.
-
-    '''
-    # open empty dataframe, ensure data is in correct form
+    # open empty dataframes, ensure data is in correct form
     predictions = pd.DataFrame(predictions)
     results = pd.DataFrame()
 
@@ -26,6 +21,12 @@ def confusion_matrix(predictions, y_test):
     y_test = y_test.reset_index(drop=True)
     results['A'] = y_test
 
+    return results
+
+
+def confusion_matrix(results):
+    '''Confusion matrix of size equal to the amount of possible predictions. Returns a pandas dataframe.'''
+
     # calculate a frequency value for each P/A pair.
     results = results.groupby(results.columns.tolist(),as_index=False).size()
 
@@ -33,7 +34,7 @@ def confusion_matrix(predictions, y_test):
     results_array = results.to_numpy()
 
     # Generate matrix grid (n x n)
-    size = len(predictions.columns.tolist())
+    size = len(list(results['A'].unique()))
     mtx = {}
     for i in range(size):
         for x in range(size):    
