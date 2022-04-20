@@ -78,10 +78,10 @@ def conf_mtx_weights (confusion_matrix, y_test):
     return mtx
 
 def compute_accuracy(results):
-    '''compute keras.metrics.accuracy, return the class object '''
+    '''compute keras.metrics.accuracy, return accuracy value'''
     acc = tf.keras.metrics.Accuracy()
     acc.update_state(results['P'], results['A'])
-    return acc
+    return acc.result().numpy()
 
 def save_model_data(model, model_evaluation, model_history, model_name):
     '''
