@@ -3,11 +3,8 @@ import src.api_call as ac
 import pandas as pd
 import src.text_process as tp
 from sklearn.model_selection import train_test_split
-import src.bert_model as bm
-import src.model_evaluation as me
+from src.bert_model import BertModel
 from pathlib import Path
-import seaborn as sns
-from matplotlib import pyplot as plt
 
 def main():
     # use API key stored in environment variables
@@ -61,28 +58,28 @@ def main():
     all_text.drop_duplicates(inplace = True)
     all_text.to_csv(f'{model_name}/clean_data.csv', index = False)
 
-    #train/test split
+    # train/test split
     x_train,x_test,y_train,y_test = train_test_split(all_text['Text'],all_text['Code'])
 
-    #generate a model
-    print ('generating model...')
-    model = bm.generate_model(len(queries))
+    # init BertModel class a model
+    model = BertModel(x_train,x_test,y_train,y_test, len(queries))
+    model.generate_model()
 
-    #train model
-    model_history, train_time, eval = bm.compile_fit_evaluate(model, x_train, y_train, x_test, y_test)
+    # train model
+    model.fit()
 
     # used trained model to predict y_test values
-    predictions = model.predict(x_test)
+    model.predict_results()
 
-    #generate confusion matrix, save to local file
-    print ('Evaluating model...')
-    confusion_mtx = me.confusion_matrix(predictions, y_test)
-    confusion_mtx = me.conf_mtx_weights(confusion_mtx, y_test)
-    sns.heatmap(confusion_mtx, annot=True)
-    plt.savefig(f'{model_name}/confusion_matrix.png', dpi = 400)
+    # generate confusion matrix
+    model.confusion_matrix()
+    model.weighted_confusion_matrix()
 
-    # save text and model information
-    me.save_model_data(model,eval,model_history,model_name)
+    # generate metrics/scores
+    model.compute_accuracy()
+    model.compute_precision()
+    model.compute_recall()
+    model.compute_f1()
 
 if __name__ == "__main__":
     main()
