@@ -7,7 +7,7 @@ import numpy as np
 from time import time
 
 class BertModel:
-    def __init__(self, X_text, y_test, X_train, y_train, num_catagories):
+    def __init__(self, X_test, y_test, X_train, y_train, num_catagories):
         '''
         constructs a tf.keras neural network using bert model for text classification
         X_test: pandas.core.series.Series
@@ -16,13 +16,11 @@ class BertModel:
         y_train: pandas.core.series.Series
         num_catagories: int
         '''
-        self.X_text = X_text
+        self.X_test = X_test
         self.y_test = y_test
         self.X_train = X_train
         self.y_train = y_train
         self.num_catagories = num_catagories
-        self.model = ""
-        self.evaluation = ""
 
     def generate_model(self):
         '''
@@ -65,10 +63,10 @@ class BertModel:
 
         path: str
         filepath to a saved keras.model folder
-        
+
         '''
-            self.model = tf.keras.models.load_model(path)
-            print ('model loaded')
+        self.model = tf.keras.models.load_model(path)
+        print ('model loaded')
 
     def fit(self):
         '''
@@ -81,14 +79,27 @@ class BertModel:
         start = time()
         self.model_history = self.model.fit(self.X_train, self.y_train, epochs=10)
         self.training_time = (time()-start)
-
         print ('Done.')
     
     def evaluate(self):
         ''' evalueates model agains the testing dataset'''
         self.evaluation = self.model.evaluate(self.X_test,  self.y_test)
+    
+    def predict_results(self):
+        '''Returns a dataframe containing predicted and true values from keras.model.predict object.'''
+        
+        # perform predictions on x_test
+        print ('generating predictions...')
+        self.predictions = pd.DataFrame(self.model.predict(self.X_test))
 
+        # open empty dataframe
+        results = pd.DataFrame()
 
+        # find column of max for each row and make new column for 'P' Prediction
+        results['P'] = self.predictions.idxmax(axis = 1)
 
+        # reset index of y_test and append actual encoded values as 'A', 
+        actual = self.y_test.reset_index(drop=True)
+        results['A'] = actual
 
-
+        self.results = results
