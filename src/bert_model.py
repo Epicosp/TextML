@@ -59,6 +59,17 @@ class BertModel:
         #print model summary
         print(model.summary())
 
+    def load_model(self, path):
+        ''' 
+        loads a pretrained model from a specified filepath
+
+        path: str
+        filepath to a saved keras.model folder
+        
+        '''
+            self.model = tf.keras.models.load_model(path)
+            print ('model loaded')
+
     def fit(self):
         '''
         compiles and fits data to self, evaluates data on test data.
