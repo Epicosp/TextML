@@ -26,7 +26,7 @@ class BertModel:
         '''
         NLP architechture consisting of BERT (v4) preprocessing and encoder,
         an input layer with neurons equal to the BERT output length,
-        A dropout layer and an output layer with neurons equal to the amount of training catagories.
+        A dropout layer and an output layer with neurons equal to num_catagories.
         
         returns a model ready for training data and prints model architecture to console
         '''
@@ -69,10 +69,8 @@ class BertModel:
         print ('model loaded')
 
     def fit(self):
-        '''
-        compiles and fits data to self, evaluates data on test data.
-        generates model history and training time.
-        '''
+        '''fits data to self.model, generates model history and training time.'''
+
         print ('Training model...')
 
         # record start and end time while fitting data to the model.
@@ -82,7 +80,7 @@ class BertModel:
         print ('Done.')
     
     def evaluate(self):
-        ''' evalueates model agains the testing dataset'''
+        ''' evaluates model against the testing dataset'''
         evaluation = self.model.evaluate(self.X_test,  self.y_test)
         self.evaluation = evaluation
         return evaluation
@@ -113,7 +111,7 @@ class BertModel:
         # calculate a frequency value for each P/A pair.
         freq = self.results.groupby(self.results.columns.tolist(), as_index=False).size()
 
-        # Convert to frequency dataframe np array
+        # Convert frequency dataframe to np array
         results_array = freq.to_numpy()
 
         # Generate matrix grid (n x n)
@@ -135,6 +133,8 @@ class BertModel:
         return mtx
 
     def weighted_confusion_matrix(self):
+        '''Applies adjustments to the values in the confusion matrix based on the relative frequency of classification types in the testing data.'''
+
         # New dataframe for groupby function
         counts = pd.DataFrame()
 
