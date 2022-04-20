@@ -7,7 +7,7 @@ import numpy as np
 from time import time
 
 class BertModel:
-    def __init__(self, X_test, y_test, X_train, y_train, num_catagories):
+    def __init__(self, X_train, y_train, X_test, y_test, num_catagories):
         '''
         constructs a tf.keras neural network using bert model for text classification
         X_test: pandas.core.series.Series
