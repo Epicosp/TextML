@@ -69,7 +69,6 @@ def main():
     model = bm.generate_model(len(queries))
 
     #train model
-
     model_history, train_time, eval = bm.compile_fit_evaluate(model, x_train, y_train, x_test, y_test)
 
     # used trained model to predict y_test values
