@@ -173,3 +173,44 @@ class BertModel:
         returns a list of recalls for each class in the data.
         '''
         self.recall = np.diag(self.confusion_mtx) / np.sum(self.confusion_mtx, axis = 1)
+
+    def compute_f1(self):
+        '''compute f1 score from the mean of precision and recall '''
+
+        rec_mean = self.recall.mean()
+        prec_mean = self.precision.mean()
+        self.f1_score = 2*((prec_mean*rec_mean)/(prec_mean+rec_mean))
+
+'''
+    def save_model_data(model, model_evaluation, model_history, model_name):
+        
+        saves the evaluation, loss and acuracy into a csv file.
+
+        saves the trained model (warning large file size)
+
+        saves the model architecture summary as a .txt file
+        
+        # initilize df1 and add evaluation results
+        eval = pd.DataFrame(model_evaluation)
+        eval = eval.T
+        eval['epoch'] = 'evaluation'
+        eval = eval.rename(columns = {0:'loss',1:'accuracy'})
+
+        # initilize df2 and add .fit metrics
+        history = pd.DataFrame(model_history.history)
+        history['epoch'] = np.arange(len(history))
+        history['epoch'] = history['epoch'].apply(lambda x: x + 1)
+
+        # combine df1 and df2
+        data = history.append(eval)
+
+        # export to csv
+        data.to_csv(f'{model_name}/evaluation.csv')
+
+        # save the model
+        model.save(f'{model_name}/model')
+
+        # save model architecture as .txt
+        with open(f'{model_name}/modelsummary.txt', 'w') as f:
+            model.summary(print_fn=lambda x: f.write(x + '\n'))
+'''
