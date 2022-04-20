@@ -7,15 +7,17 @@ import numpy as np
 from time import time
 
 class BertModel:
-    def __init__(self, X_train, y_train, X_test, y_test, num_catagories):
+    def __init__(self, X_train, y_train, X_test, y_test, num_catagories, model_name='BertModel'):
         '''
         constructs a tf.keras neural network using bert model for text classification
+        model_name: string
         X_test: pandas.core.series.Series
         y_test: pandas.core.series.Series
         X_train: pandas.core.series.Series
         y_train: pandas.core.series.Series
         num_catagories: int
         '''
+        self.name = model_name
         self.X_test = X_test
         self.y_test = y_test
         self.X_train = X_train
@@ -81,9 +83,7 @@ class BertModel:
     
     def evaluate(self):
         ''' evaluates model against the testing dataset'''
-        evaluation = self.model.evaluate(self.X_test,  self.y_test)
-        self.evaluation = evaluation
-        return evaluation
+        self.evaluation = self.model.evaluate(self.X_test,  self.y_test)
     
     def predict_results(self):
         '''Returns a dataframe containing predicted and true values from keras.model.predict object.'''
@@ -181,36 +181,34 @@ class BertModel:
         prec_mean = self.precision.mean()
         self.f1_score = 2*((prec_mean*rec_mean)/(prec_mean+rec_mean))
 
-'''
-    def save_model_data(model, model_evaluation, model_history, model_name):
-        
-        saves the evaluation, loss and acuracy into a csv file.
-
-        saves the trained model (warning large file size)
-
+    def save_model(self, path):
+        '''
+        saves the trained or partially trained model (warning large file size)
         saves the model architecture summary as a .txt file
-        
-        # initilize df1 and add evaluation results
-        eval = pd.DataFrame(model_evaluation)
-        eval = eval.T
-        eval['epoch'] = 'evaluation'
-        eval = eval.rename(columns = {0:'loss',1:'accuracy'})
-
-        # initilize df2 and add .fit metrics
-        history = pd.DataFrame(model_history.history)
-        history['epoch'] = np.arange(len(history))
-        history['epoch'] = history['epoch'].apply(lambda x: x + 1)
-
-        # combine df1 and df2
-        data = history.append(eval)
-
-        # export to csv
-        data.to_csv(f'{model_name}/evaluation.csv')
+        '''
+        # save model architecture as .txt
+        with open(f'{path}/{self.name}/modelsummary.txt', 'w') as f:
+            self.model.summary(print_fn=lambda x: f.write(x + '\n'))
 
         # save the model
-        model.save(f'{model_name}/model')
+        self.model.save(f'{path}/{self.name}/model')
 
-        # save model architecture as .txt
-        with open(f'{model_name}/modelsummary.txt', 'w') as f:
-            model.summary(print_fn=lambda x: f.write(x + '\n'))
-'''
+    def save_model_data(self, path):
+        '''
+        saves the metrics, confusion matricees and training history.
+        '''
+        # write a report string including metrics and save as txt file.
+        report_string = f"Model metrics\n -------------------\n Accuracy: {self.accuracy}\nPrecision: {self.precision.mean()}\n Recall: {self.recall.mean()}\n F1 Score: {self.f1_score}"
+        with open(f'{path}/{self.name}_report.txt', 'w') as f:
+            f.write(report_string)
+            f.close()
+
+        # save confusion matrix as csv files
+        self.confusion_mtx.to_csv(f'{path}/{self.name}/confusion_matrix.csv')
+        self.weighted_confusion_mtx.to_csv(f'{path}/{self.name}/weighted_confusion_matrix.csv')
+
+        # save the training history as csv
+        history = pd.DataFrame(self.model_history.history)
+        history['epoch'] = np.arange(len(history))
+        history['epoch'] = history['epoch'].apply(lambda x: x + 1)
+        history.to_csv(f'{path}/{self.name}/model_history.csv')
