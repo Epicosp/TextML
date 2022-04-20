@@ -83,7 +83,9 @@ class BertModel:
     
     def evaluate(self):
         ''' evalueates model agains the testing dataset'''
-        self.evaluation = self.model.evaluate(self.X_test,  self.y_test)
+        evaluation = self.model.evaluate(self.X_test,  self.y_test)
+        self.evaluation = evaluation
+        return evaluation
     
     def predict_results(self):
         '''Returns a dataframe containing predicted and true values from keras.model.predict object.'''
@@ -103,3 +105,49 @@ class BertModel:
         results['A'] = actual
 
         self.results = results
+        return results
+
+    def confusion_matrix(self):
+        '''Confusion matrix of size equal to the amount of possible predictions. Returns a pandas dataframe.'''
+
+        # calculate a frequency value for each P/A pair.
+        freq = self.results.groupby(self.results.columns.tolist(), as_index=False).size()
+
+        # Convert to frequency dataframe np array
+        results_array = freq.to_numpy()
+
+        # Generate matrix grid (n x n)
+        size = self.num_catagories
+        mtx = {}
+        for i in range(size):
+            for x in range(size):    
+                mtx[i] = {i:np.NaN}
+        mtx = pd.DataFrame(mtx)
+
+        # iterate over the np array, use the Predicted and Actual values as coordinates to insert the respective size value
+        # any missing values will remain as NaN. once filled, replace NaN with 0.
+        # matrix is represented with Predictions on the x axis (columns) and Actual values on the y axis (rows)
+        for item in results_array:
+            mtx[item[0]][item[1]] = item[2]
+        mtx = mtx.replace(np.NaN, 0)
+
+        self.confusion_mtx = mtx
+        return mtx
+
+    def weighted_confusion_matrix(self):
+        # New dataframe for groupby function
+        counts = pd.DataFrame()
+
+        # Pass in data and apply groupby, store size values
+        counts['y_test'] = self.y_test.reset_index(drop=True)
+        counts = counts.groupby('y_test').size()
+
+        # Operations for calculation of adjustment factor for each classification type
+        total_count = len(self.y_test)
+        adjustment_factor = counts/total_count
+
+        # apply the adjustment factor along rows
+        weighted_mtx = self.confusion_mtx.multiply(adjustment_factor, axis = 'index')
+        
+        self.weighted_confusion_mtx = weighted_mtx
+        return weighted_mtx
