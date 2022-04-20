@@ -151,3 +151,25 @@ class BertModel:
         
         self.weighted_confusion_mtx = weighted_mtx
         return weighted_mtx
+
+    def compute_accuracy(self):
+        '''compute keras.metrics.accuracy, return accuracy value'''
+        acc = tf.keras.metrics.Accuracy()
+        acc.update_state(self.results['P'], self.results['A'])
+        self.accuracy = acc.result().numpy()
+    
+    def compute_precision(self):
+        '''
+        extracts the diagonal from the confusion matrix and divides by the sum of the rows. 
+        
+        returns a list of precisions for each class in the data.
+        '''
+        self.precision = np.diag(self.confusion_mtx) / np.sum(self.confusion_mtx, axis = 0)
+
+    def compute_recall(self):
+        '''
+        extracts the diagonal from the confusion matrix and divides by the sum of the columns. 
+        
+        returns a list of recalls for each class in the data.
+        '''
+        self.recall = np.diag(self.confusion_mtx) / np.sum(self.confusion_mtx, axis = 1)
