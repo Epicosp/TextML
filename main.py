@@ -61,11 +61,18 @@ def main():
     # train/test split
     x_train,x_test,y_train,y_test = train_test_split(all_text['Text'],all_text['Code'])
 
-    # init BertModel class a model
-    model = BertModel(x_train,x_test,y_train,y_test, len(queries))
+    # init BertModel class
+    model = BertModel(
+        X_train=x_train,
+        X_test = x_test,
+        y_train = y_train,
+        y_test = y_test,
+        num_catagories = len(queries),
+        model_name = model_name
+    )
     model.generate_model()
 
-    # train model
+    # fit model
     model.fit()
 
     # used trained model to predict y_test values
@@ -80,6 +87,10 @@ def main():
     model.compute_precision()
     model.compute_recall()
     model.compute_f1()
+    
+    #save model and data
+    model.save_model(path = Path(model_name))
+    model.save_model_data(path = Path(model_name))
 
 if __name__ == "__main__":
     main()
