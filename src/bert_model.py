@@ -187,28 +187,28 @@ class BertModel:
         saves the model architecture summary as a .txt file
         '''
         # save model architecture as .txt
-        with open(f'{path}/{self.name}/modelsummary.txt', 'w') as f:
+        with open(f'{path}/{self.name}_modelsummary.txt', 'w') as f:
             self.model.summary(print_fn=lambda x: f.write(x + '\n'))
 
         # save the model
-        self.model.save(f'{path}/{self.name}/model')
+        self.model.save(f'{path}/{self.name}_model')
 
     def save_model_data(self, path):
         '''
         saves the metrics, confusion matricees and training history.
         '''
         # write a report string including metrics and save as txt file.
-        report_string = f"Model metrics\n -------------------\n Accuracy: {self.accuracy}\nPrecision: {self.precision.mean()}\n Recall: {self.recall.mean()}\n F1 Score: {self.f1_score}"
+        report_string = f"Model metrics\n ---------------------------------\nAccuracy: {self.accuracy}\nPrecision: {self.precision.mean()}\nRecall: {self.recall.mean()}\nF1 Score: {self.f1_score}"
         with open(f'{path}/{self.name}_report.txt', 'w') as f:
             f.write(report_string)
             f.close()
 
         # save confusion matrix as csv files
-        self.confusion_mtx.to_csv(f'{path}/{self.name}/confusion_matrix.csv')
-        self.weighted_confusion_mtx.to_csv(f'{path}/{self.name}/weighted_confusion_matrix.csv')
+        self.confusion_mtx.to_csv(f'{path}/{self.name}_confmtx.csv')
+        self.weighted_confusion_mtx.to_csv(f'{path}/{self.name}_wconfmtx.csv')
 
         # save the training history as csv
         history = pd.DataFrame(self.model_history.history)
         history['epoch'] = np.arange(len(history))
         history['epoch'] = history['epoch'].apply(lambda x: x + 1)
-        history.to_csv(f'{path}/{self.name}/model_history.csv')
+        history.to_csv(f'{path}/{self.name}_trainingHistory.csv')
